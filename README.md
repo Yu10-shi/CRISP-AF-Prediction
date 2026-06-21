@@ -100,75 +100,62 @@ The application is designed to make individualized AF risk prediction more acces
 UCTT-RP-AF-Prediction/
 ├── README.md
 ├── requirements.txt
-├── src/
-│   ├── model.py
-│   ├── train.py
-│   ├── evaluate.py
-│   ├── calibration.py
-│   ├── interpretation.py
-│   └── utils.py
-├── configs/
-│   └── config.yaml
-├── scripts/
-│   ├── run_training.sh
-│   ├── run_evaluation.sh
-│   └── run_interpretation.sh
-├── shiny_app/
-│   ├── app.R
-│   └── utils.R
-├── docs/
-│   └── method_overview.md
-└── examples/
-    └── example_input.csv
+├── notebooks/
+│   ├── End-to-end.ipynb
+│   ├── Table1.ipynb
+│   ├── Train_tab.ipynb
+│   ├── Tab_no_train.ipynb
+│   └── SHAP.ipynb
+├── R/
+│   └── RandomForest.R
+├── data/
+│   └── README.md
+├── results/
+│   └── README.md
+└── docs/
+    └── method_overview.md
 ```
 
-## Installation
+## Expected Data Format
 
-Clone the repository:
+The code assumes that the preprocessed data are stored as CSV files using the following split structure:
 
-```bash
-git clone https://github.com/YOUR_USERNAME/UCTT-RP-AF-Prediction.git
-cd UCTT-RP-AF-Prediction
+```text
+data/
+├── train.csv
+├── val.csv
+├── cal.csv
+├── test.csv
+└── bootstrap500/
+    ├── bootstrap_1.csv
+    ├── bootstrap_2.csv
+    └── ...
+````
+
+Each data split should contain clinical feature columns and two outcome columns:
+
+* `year`: observed follow-up time or event time
+* `status`: event indicator
+
+The `status` variable is defined as:
+
+| Value | Meaning                                                   |
+| ----: | --------------------------------------------------------- |
+|   `0` | Censored                                                  |
+|   `1` | Incident atrial fibrillation                              |
+|   `2` | Competing event, such as death before atrial fibrillation |
+
+The current notebooks use project-specific absolute paths, such as:
+
+```text
+/home/UT_shared/data/
 ```
 
-Create a conda environment:
+Before running the code on a new machine, update these paths to match the local repository structure.
 
-```bash
-conda create -n uctt-rp python=3.10
-conda activate uctt-rp
+```
 ```
 
-Install required packages:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-Train the model:
-
-```bash
-python src/train.py --config configs/config.yaml
-```
-
-Evaluate model performance:
-
-```bash
-python src/evaluate.py --config configs/config.yaml
-```
-
-Run recalibration and uncertainty evaluation:
-
-```bash
-python src/calibration.py --config configs/config.yaml
-```
-
-Run model interpretation:
-
-```bash
-python src/interpretation.py --config configs/config.yaml
-```
 
 ## Data Availability
 
