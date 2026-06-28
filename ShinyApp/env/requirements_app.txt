@@ -1,0 +1,19 @@
+# Python runtime dependencies for the Shiny app (predict_model.py + CP).
+# Pinned to the versions verified working in the `hu_ssc` conda env on 2026-06-21.
+# Python 3.10 required (model was pickled under 3.10).
+#
+# Install into a fresh env, e.g.:
+#   conda create -n hu_ssc python=3.10 -y
+#   conda activate hu_ssc
+#   pip install -r requirements_app.txt
+
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.7.2
+torch==2.9.1
+torchtuples==0.2.2
+einops==0.8.1
+tab-transformer-pytorch==0.5.3
+pycox==0.3.0
+matplotlib==3.10.7          # only needed for the offline CP plotting script, not the app
