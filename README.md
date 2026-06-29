@@ -116,26 +116,21 @@ UCTT-RP-AF-Prediction/
 ├── README.md
 ├── requirements.txt
 ├── notebooks/
-│   ├── End_to_end.ipynb
+│   ├── End-to-end.ipynb
+│   ├── Table1.ipynb
 │   ├── Train_tab.ipynb
 │   ├── Tab_no_train.ipynb
-│   ├── SHAP.ipynb
-│   ├── Plot.ipynb
+│   └── SHAP.ipynb
+├── R/
 │   └── RandomForest.R
+├── data/
+│   └── README.md
+├── results/
+│   └── README.md
 ├── docs/
-│   └── uctt_rp_workflow.png
-└── ShinyApp/                                 # interactive risk-prediction web app
-    ├── SETUP.md                              # app setup & run instructions
-    ├── app.R                                 # main Shiny app
-    ├── predict_model.py                      # Python inference (via reticulate)
-    ├── model_meta.json                       # feature order, categ/cont indices, risk names
-    ├── cp_outputs/
-    │   └── ucttrp_aj_upb_recalibration.npz    # aggregate AJ calibration constants
-    └── env/                                  # Python + R dependency specs
+│   └── method_overview.md
+└── ShinyApp/                                 # interactive Shiny risk-prediction app (see ShinyApp/SETUP.md)
 ```
-
-The trained model (`.pt`) and all patient/clinical data are excluded for
-privacy; see `ShinyApp/SETUP.md` for the model file the app expects.
 
 ## Expected Data Format
 

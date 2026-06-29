@@ -7,8 +7,11 @@ an **Aalen–Johansen–recalibrated upper predicted bound (UPB)** for each outc
 test-case-level permutation feature-importance module.
 
 > ⚠️ **The trained model and all patient/clinical data are NOT included in this
-> repository for data-privacy reasons.** The code is fully provided; you must supply
-> your own model weights and (optionally) data — see **"Required model file"** below.
+> repository for data-privacy reasons.** The code is fully provided. The trained
+> model weights and the underlying data cannot be shared publicly; they are
+> **available by request** — please contact **Yu Shi** (ysherry.shi@mail.utoronto.ca).
+> Once you have the model file, place it in this `ShinyApp/` folder (see
+> **"Required model file"** below) to run the app.
 
 ---
 
