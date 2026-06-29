@@ -16,6 +16,7 @@ test-case-level permutation feature-importance module.
 
 ```
 .
+├── SETUP.md                                # this file
 ├── app.R                                   # main Shiny app
 ├── predict_model.py                        # Python inference (called via reticulate)
 ├── model_meta.json                         # feature order, categ/cont indices, risk names
@@ -48,9 +49,10 @@ The model must be a 30-time-bin (`dur30`) TabTransformer + DeepHit model consist
 with `model_meta.json`; the bundled `cp_outputs/ucttrp_aj_upb_recalibration.npz`
 (delta + 30-bin time grid) is calibrated for that model.
 
-**Optional data:** manual-entry feature-importance needs reference rows. To enable it,
-add an `example_input.csv` (one or more example records with the model's feature
-columns) to the repository root, or use the app's CSV-upload mode.
+**Optional data:** permutation feature-importance needs reference rows to sample
+replacement values from. Provide them by uploading a multi-row CSV (the other rows
+are used as the reference), or by adding an `example_input.csv` (one or more records
+with the model's feature columns) to this `ShinyApp/` folder as a fallback.
 
 ---
 

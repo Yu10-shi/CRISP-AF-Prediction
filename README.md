@@ -95,14 +95,19 @@ A Shiny-based web application was developed to support clinical translation of t
 
 The interface allows users to:
 
-* Enter patient-level clinical variables manually
-* Upload patient data using CSV files
+* Upload patient data as a CSV file (one row per individual) and select a row
+* View and edit all 78 model features for the selected record in a scrollable
+  panel; any missing value (blank cell or absent column) is automatically
+  filled with 0, with a notification of how many were filled
 * Generate individualized AF and competing-risk predictions
-* Visualize time-dependent event probability and survival curves
-* Export prediction results
-* Compute patient-level feature importance
+* Visualize time-dependent event probability and survival curves, including an
+  Aalen–Johansen–recalibrated upper predicted bound for each outcome
+* Compute patient-level permutation feature importance over all 78 features
+* Export prediction results and feature importance
 
 The application is designed to make individualized AF risk prediction more accessible for research and clinical workflows.
+
+See `ShinyApp/SETUP.md` for setup and run instructions.
 
 ## Repository Structure
 
@@ -111,20 +116,26 @@ UCTT-RP-AF-Prediction/
 ├── README.md
 ├── requirements.txt
 ├── notebooks/
-│   ├── End-to-end.ipynb
-│   ├── Table1.ipynb
+│   ├── End_to_end.ipynb
 │   ├── Train_tab.ipynb
 │   ├── Tab_no_train.ipynb
-│   └── SHAP.ipynb
-├── R/
+│   ├── SHAP.ipynb
+│   ├── Plot.ipynb
 │   └── RandomForest.R
-├── data/
-│   └── README.md
-├── results/
-│   └── README.md
-└── docs/
-    └── method_overview.md
+├── docs/
+│   └── uctt_rp_workflow.png
+└── ShinyApp/                                 # interactive risk-prediction web app
+    ├── SETUP.md                              # app setup & run instructions
+    ├── app.R                                 # main Shiny app
+    ├── predict_model.py                      # Python inference (via reticulate)
+    ├── model_meta.json                       # feature order, categ/cont indices, risk names
+    ├── cp_outputs/
+    │   └── ucttrp_aj_upb_recalibration.npz    # aggregate AJ calibration constants
+    └── env/                                  # Python + R dependency specs
 ```
+
+The trained model (`.pt`) and all patient/clinical data are excluded for
+privacy; see `ShinyApp/SETUP.md` for the model file the app expects.
 
 ## Expected Data Format
 
