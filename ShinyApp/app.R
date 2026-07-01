@@ -44,11 +44,6 @@ cont_names <- feature_names[cont_features + 1L]
 duration_labels <- meta$duration_labels
 risk_names <- meta$risk_names
 
-bin_year_labels <- sapply(0:9, function(i) {
-  yr <- round(i / 9 * 14.9, 1)
-  paste0("bin_", i, "\n(", yr, " yr)")
-})
-
 `%||%` <- function(a, b) if (!is.null(a) && length(a) > 0 && !anyNA(a)) a else b
 
 # Shortened label for display; full name in tooltip
@@ -68,6 +63,101 @@ if (file.exists(example_path)) {
 } else {
   example_defaults <- setNames(as.list(rep(0, length(feature_names))), feature_names)
 }
+
+# Friendly display names (from collaborator Variable.pdf / Table S2); technical id shown on hover
+FRIENDLY <- c(
+  "hypertension_icd10" = "Hypertension",
+  "diabetes_combined" = "Diabetes",
+  "dyslipidemia_combined" = "Dyslipidemia",
+  "dcm_icd10" = "Dilated cardiomyopathy",
+  "hcm_icd10" = "Hypertrophic cardiomyopathy",
+  "myocarditis_icd10_prior" = "Acute myocarditis",
+  "pericarditis_icd10_prior" = "Acute pericarditis",
+  "aortic_aneurysm_icd10" = "Aortic aneurysm",
+  "aortic_dissection_icd10_prior" = "Aortic dissection",
+  "pulmonary_htn_icd10" = "Pulmonary hypertension",
+  "amyloid_icd10" = "Amyloidosis",
+  "copd_icd10" = "Chronic obstructive pulmonary disease",
+  "obstructive._sleep_apnea_icd10" = "Obstructive sleep apnea",
+  "hyperthyroid_icd10" = "Hyperthyroidism",
+  "hypothyroid_icd10" = "Hypothyroidism",
+  "rheumatoid_arthritis_icd10" = "Rheumatoid arthritis",
+  "sle_icd10" = "Systemic lupus erythematosus",
+  "sarcoid_icd10" = "Sarcoidosis",
+  "cancer_any_icd10" = "Cancer",
+  "event_cv_hf_admission_icd10_prior" = "Heart failure admission",
+  "event_cv_ep_vt_any_icd10_prior" = "Ventricular tachycardia",
+  "event_cv_ep_sca_survived_icd10_cci_prior" = "Survived sudden cardiac arrest",
+  "event_cv_cns_stroke_ischemic_icd10_prior" = "Ischemic stroke",
+  "event_cv_cns_stroke_hemorrh_icd10_prior" = "Hemorrhagic stroke",
+  "event_cv_cns_tia_icd10_prior" = "Transient ischemic attack",
+  "pci_prior" = "Percutaneous coronary intervention",
+  "cabg_prior" = "Coronary artery bypass grafting",
+  "transplant_heart_cci_prior" = "Cardiac transplantation",
+  "lvad_cci_prior" = "Left ventricular assist device implantation",
+  "pacemaker_permanent_cci_prior" = "Permanent pacemaker",
+  "crt_cci_prior" = "Cardiac resynchronization therapy",
+  "icd_cci_prior" = "Implantable cardioverter defibrillator",
+  "ecg_resting_paced" = "Paced rhythm",
+  "ecg_resting_bigeminy" = "Bigeminy",
+  "ecg_resting_LBBB" = "Left bundle branch block",
+  "ecg_resting_RBBB" = "Right bundle branch block",
+  "ecg_resting_incomplete_LBBB" = "Incomplete left bundle branch block",
+  "ecg_resting_incomplete_RBBB" = "Incomplete right bundle branch block",
+  "ecg_resting_LAFB" = "Left anterior fascicular block",
+  "ecg_resting_LPFB" = "Left posterior fascicular block",
+  "ecg_resting_bifascicular_block" = "Bifascicular block",
+  "ecg_resting_trifascicular_block" = "Trifascicular block",
+  "ecg_resting_intraventricular_conduction_delay" = "Intraventricular conduction delay",
+  "anti_platelet_oral_non_asa_any_peri" = "Non-aspirin anti-platelet",
+  "anti_coagulant_oral_any_peri" = "Oral anti-coagulant",
+  "nitrates_any_peri" = "Nitrates",
+  "beta_blocker_any_peri" = "Beta-blocker",
+  "ivabradine_peri" = "Ivabradine",
+  "ccb_dihydro_peri" = "Dihydropyridine calcium channel blocker",
+  "ccb_non_dihydro_peri" = "Non-dihydropyridine calcium channel blocker",
+  "diuretic_loop_peri" = "Loop diuretic",
+  "diuretic_thiazide_peri" = "Thiazide diuretic",
+  "diuretic_low_ceiling_non_thiazide_peri" = "Low-ceiling non-thiazide diuretic",
+  "diuretic_mra_peri" = "Potassium-sparing diuretic",
+  "anti_arrhythmic_any_peri" = "Anti-arrhythmic",
+  "digoxin_peri" = "Digoxin",
+  "amyloid_therapeutics_diflunisal_peri" = "Diflunisal",
+  "smoking_cessation_oral_peri" = "Oral smoking cessation medication",
+  "sex_imp" = "Sex (female = 1)",
+  "acei_arb_entresto" = "ACEi / ARB / Entresto",
+  "acute_mi_angina_other" = "Acute MI / unstable angina / other ACS",
+  "demographics_age_index_ecg" = "Age, y",
+  "ecg_resting_hr" = "Heart rate, bpm",
+  "ecg_resting_pr" = "PR interval, ms",
+  "ecg_resting_qrs" = "QRS duration, ms",
+  "ecg_resting_qtc" = "Corrected QT interval (QTc), ms",
+  "hgb_peri" = "Hemoglobin, g/L",
+  "rdw_peri" = "Red cell distribution width, %",
+  "wbc_peri" = "White cell count, x10^9/L",
+  "plt_peri" = "Platelet count, x10^9/L",
+  "alkaline_phophatase_peri" = "Alkaline phosphatase, U/L",
+  "alanine_transaminase_peri" = "Alanine transaminase, U/L",
+  "urea_peri" = "Blood urea, mmol/L",
+  "creatinine_peri" = "Serum creatinine, umol/L",
+  "sodium_peri" = "Serum sodium, mmol/L",
+  "potassium_peri" = "Serum potassium, mmol/L",
+  "chloride_peri" = "Serum chloride, mmol/L",
+  "tsh_peri" = "Thyroid stimulating hormone (TSH), mU/L"
+)
+
+# Clinical display groups for the Data Entry panel (display order only; prediction is unaffected)
+FEATURE_SECTIONS <- list(
+  list(title = "Demographics", feats = c("demographics_age_index_ecg", "sex_imp")),
+  list(title = "Cardiovascular risk factors", feats = c("hypertension_icd10", "diabetes_combined", "dyslipidemia_combined")),
+  list(title = "Known / prior cardiovascular disease", feats = c("dcm_icd10", "hcm_icd10", "myocarditis_icd10_prior", "pericarditis_icd10_prior", "aortic_aneurysm_icd10", "aortic_dissection_icd10_prior", "pulmonary_htn_icd10")),
+  list(title = "Known non-cardiovascular disease", feats = c("amyloid_icd10", "copd_icd10", "obstructive._sleep_apnea_icd10", "hyperthyroid_icd10", "hypothyroid_icd10", "rheumatoid_arthritis_icd10", "sle_icd10", "sarcoid_icd10", "cancer_any_icd10")),
+  list(title = "Prior cardiovascular events", feats = c("event_cv_hf_admission_icd10_prior", "acute_mi_angina_other", "event_cv_ep_vt_any_icd10_prior", "event_cv_ep_sca_survived_icd10_cci_prior", "event_cv_cns_stroke_ischemic_icd10_prior", "event_cv_cns_stroke_hemorrh_icd10_prior", "event_cv_cns_tia_icd10_prior")),
+  list(title = "Prior cardiovascular procedures", feats = c("pci_prior", "cabg_prior", "transplant_heart_cci_prior", "lvad_cci_prior", "pacemaker_permanent_cci_prior", "crt_cci_prior", "icd_cci_prior")),
+  list(title = "Resting ECG", feats = c("ecg_resting_hr", "ecg_resting_pr", "ecg_resting_qrs", "ecg_resting_qtc", "ecg_resting_paced", "ecg_resting_bigeminy", "ecg_resting_LBBB", "ecg_resting_RBBB", "ecg_resting_incomplete_LBBB", "ecg_resting_incomplete_RBBB", "ecg_resting_LAFB", "ecg_resting_LPFB", "ecg_resting_bifascicular_block", "ecg_resting_trifascicular_block", "ecg_resting_intraventricular_conduction_delay")),
+  list(title = "Laboratory", feats = c("hgb_peri", "rdw_peri", "wbc_peri", "plt_peri", "alkaline_phophatase_peri", "alanine_transaminase_peri", "urea_peri", "creatinine_peri", "sodium_peri", "potassium_peri", "chloride_peri", "tsh_peri")),
+  list(title = "Medications", feats = c("anti_platelet_oral_non_asa_any_peri", "anti_coagulant_oral_any_peri", "nitrates_any_peri", "acei_arb_entresto", "beta_blocker_any_peri", "ivabradine_peri", "ccb_dihydro_peri", "ccb_non_dihydro_peri", "diuretic_loop_peri", "diuretic_thiazide_peri", "diuretic_low_ceiling_non_thiazide_peri", "diuretic_mra_peri", "anti_arrhythmic_any_peri", "digoxin_peri", "amyloid_therapeutics_diflunisal_peri", "smoking_cessation_oral_peri"))
+)
 
 # -----------------------------
 # UI
@@ -97,7 +187,8 @@ ui <- navbarPage(
             helpText("Select a row to view/edit its features and run prediction for that individual. Use arrows or type a number."),
             tags$hr(),
             h5("Features (all 78 — editable)", style = "margin-top:8px;font-weight:bold"),
-            helpText("Values are seeded from the selected CSV row; any missing value is filled with 0. Label truncated; hover for full name. Integer codes for categorical.", style = "font-size:0.85em;"),
+            helpText("Values are seeded from the selected CSV row; any missing value is filled with 0. Hover a label for the full description and variable name.", style = "font-size:0.85em;"),
+            checkboxInput("show_tech_names", "Show variable names", value = FALSE),
             div(
               style = "max-height: 780px; overflow-y: auto; overflow-x: hidden; border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px; background: #ffffff;",
               uiOutput("manual_inputs_ui")
@@ -163,17 +254,18 @@ ui <- navbarPage(
         tags$ul(
           tags$li("Inputs: 78 features in fixed model order (61 categorical + 17 continuous)."),
           tags$li("Architecture: TabTransformer encoder with DeepHit-style risk-specific output heads."),
-          tags$li("Time output: 10 discrete bins. For each outcome, the model outputs event probability by bin."),
+          tags$li("Time output: 30 discrete bins spanning the follow-up horizon (~15 years). For each outcome, the model outputs event probability by bin."),
           tags$li("Survival is computed as 1 minus the cumulative event probability across bins.")
         ),
         tags$hr(),
         h5("How to use this 3-panel interface", style = "font-weight:bold"),
         h6("Panel 1: Data Entry", style = "font-weight:bold"),
         tags$ul(
-          tags$li("Upload a CSV (one row per individual) with the 78 feature columns. Select Current row to load that individual's values."),
-          tags$li("All 78 features are shown as editable fields in a scrollable list, seeded from the selected row. You can edit any value before running the prediction."),
+          tags$li("Upload a CSV (one row per individual) whose columns are named with the model's variable names. Select Current row to load that individual's values."),
+          tags$li("All 78 features are shown as editable fields, grouped by clinical category (Demographics, comorbidities, prior events/procedures, Resting ECG, Laboratory, Medications) in a scrollable list, seeded from the selected row. You can edit any value before running the prediction."),
           tags$li("Missing data is handled automatically: any blank/NA cell, or any required column absent from the CSV, is filled with 0, and a notification tells you how many values were filled."),
-          tags$li("Labels are shortened and show the full name on hover. Categorical features use integer codes.")
+          tags$li("Each field shows a descriptive label (e.g. \"Hemoglobin, g/L\"). Hover a label to see the full description and the underlying variable name (the dataset/CSV column, e.g. hgb_peri). Tick \"Show variable names\" to display the variable names in place of the labels."),
+          tags$li("Categorical features are 0/1 coded (0 = no, 1 = yes).")
         ),
         h6("Panel 2: Prediction Output", style = "font-weight:bold"),
         tags$ul(
@@ -191,7 +283,8 @@ ui <- navbarPage(
           tags$li(tags$strong("Importance is outcome-specific."), " To get importance for AF: select AF in the Outcome selector (Panel 2) and click Compute Importance. To get importance for All cause death: switch the Outcome selector to All cause death and click Compute Importance again. Each outcome produces different importance scores."),
           tags$li("Importance resets automatically after each Run Prediction — you must click Compute Importance again to see updated results."),
           tags$li("Requires reference data: a CSV with 2+ rows (other rows used as reference), or example_input.csv as a fallback."),
-          tags$li("Save importance (CSV): downloads Feature and Importance columns.")
+          tags$li("Feature names in the plot and table use the descriptive labels and follow the same \"Show variable names\" toggle as Panel 1."),
+          tags$li("Save importance (CSV): downloads Variable, Label, and Importance columns.")
         ),
         tags$hr(),
         h5("Save results", style = "font-weight:bold"),
@@ -204,7 +297,7 @@ ui <- navbarPage(
         h5("Notes", style = "font-weight:bold"),
         tags$ul(
           tags$li("CSV upload limit is set to 100 MB."),
-          tags$li("Categorical values should use integer codes aligned with the model training schema."),
+          tags$li("Categorical features are 0/1 coded (0 = no, 1 = yes), aligned with the model training schema."),
           tags$li("If Current row is out of range (e.g., greater than the number of rows in the file), the app shows a warning and adjusts to a valid row."),
           tags$li("Feature importance uses permutation (sensitivity): each feature is replaced with a random value from the reference; importance = |change in prediction|."),
           tags$li("Importance is computed for all 78 features of the current record.")
@@ -222,53 +315,50 @@ server <- function(input, output, session) {
 
   # Data Entry: all 78 features, editable (seeded from selected CSV row)
   output$manual_inputs_ui <- renderUI({
-    top_cat <- cat_names
-    top_cont <- cont_names
-    tagList(
-      lapply(top_cat, function(feat) {
-        fluidRow(
-          column(
-            width = 6,
-            tags$label(
-              `for` = paste0("feat_", feat),
-              title = feat,
-              style = "font-size: 0.9em; padding-top: 6px;",
-              truncate_label(feat)
-            ),
-          ),
-          column(
-            width = 6,
-            numericInput(
-              inputId = paste0("feat_", feat),
-              label = NULL,
-              value = as.integer(example_defaults[[feat]] %||% 0),
-              min = 0,
-              step = 1
-            )
+    # Re-renders only when the label mode toggles; read current values (isolated)
+    # from the source of truth so a toggle never wipes CSV-loaded / edited values.
+    show_tech <- isTRUE(input$show_tech_names)
+    cur <- isolate(feature_vals())
+    # One editable field: friendly name (or technical id) as label; full name +
+    # technical id always on hover.
+    render_field <- function(feat) {
+      is_cat <- feat %in% cat_names
+      friendly <- FRIENDLY[[feat]] %||% feat
+      lab <- if (show_tech) feat else friendly
+      tip <- paste0(friendly, if (is_cat) " (0 = no, 1 = yes)" else "", "  ·  ", feat)
+      val <- (cur[[feat]] %||% example_defaults[[feat]]) %||% 0
+      fluidRow(
+        style = "margin-bottom: 2px;",
+        column(
+          width = 7,
+          tags$label(
+            `for` = paste0("feat_", feat),
+            title = tip,
+            style = "font-size: 0.85em; padding-top: 6px; line-height: 1.1; display: block;",
+            truncate_label(lab, 34)
           )
+        ),
+        column(
+          width = 5,
+          if (is_cat)
+            numericInput(paste0("feat_", feat), label = NULL,
+                         value = as.integer(val), min = 0, step = 1)
+          else
+            numericInput(paste0("feat_", feat), label = NULL,
+                         value = as.numeric(val), step = 0.1)
         )
-      }),
-      tags$hr(style = "margin: 8px 0;"),
-      lapply(top_cont, function(feat) {
-        fluidRow(
-          column(
-            width = 6,
-            tags$label(
-              `for` = paste0("feat_", feat),
-              title = feat,
-              style = "font-size: 0.9em; padding-top: 6px;",
-              truncate_label(feat)
-            ),
+      )
+    }
+    # Render features grouped by clinical section, each under a subheader.
+    tagList(
+      lapply(FEATURE_SECTIONS, function(sec) {
+        tagList(
+          tags$div(
+            sec$title,
+            style = "margin: 10px 0 4px; padding: 3px 6px; font-weight: bold; font-size: 0.9em;
+                     color: #2c3e50; background: #eef2f6; border-left: 3px solid #4a90d9; border-radius: 2px;"
           ),
-          column(
-            width = 6,
-            numericInput(
-              inputId = paste0("feat_", feat),
-              label = NULL,
-              value = as.numeric(example_defaults[[feat]] %||% 0),
-              step = 0.1
-            )
-          )
+          lapply(sec$feats, render_field)
         )
       })
     )
@@ -944,6 +1034,9 @@ server <- function(input, output, session) {
     )
     if (is.null(vals) || is.null(nms) || length(nms) != length(vals)) return(NULL)
     df <- data.frame(Feature = nms, Importance = vals, stringsAsFactors = FALSE)
+    # Friendly label for display (falls back to the technical id if unmapped)
+    df$Label <- unname(FRIENDLY[df$Feature])
+    df$Label[is.na(df$Label)] <- df$Feature[is.na(df$Label)]
     df <- df[order(-df$Importance, df$Feature), , drop = FALSE]
     df
   })
@@ -975,12 +1068,14 @@ server <- function(input, output, session) {
     total <- sum(df_nonzero$Importance)
     top$Pct <- top$Importance / total * 100
 
+    # Display name follows the same toggle as the Data Entry panel
+    top$Disp <- if (isTRUE(input$show_tech_names)) top$Feature else top$Label
     # Shared y-axis order (highest importance at top)
-    feat_levels <- rev(top$Feature)
-    top$Feature <- factor(top$Feature, levels = feat_levels)
+    feat_levels <- rev(top$Disp)
+    top$Disp <- factor(top$Disp, levels = feat_levels)
 
     # Left plot: % of total
-    p_pct <- ggplot(top, aes(x = Pct, y = Feature)) +
+    p_pct <- ggplot(top, aes(x = Pct, y = Disp)) +
       geom_col(fill = "steelblue", width = 0.7) +
       geom_text(aes(label = sprintf("%.1f%%", Pct)), hjust = -0.1, size = 2.8) +
       scale_x_continuous(expand = expansion(mult = c(0, 0.18))) +
@@ -992,7 +1087,7 @@ server <- function(input, output, session) {
             plot.title = element_text(size = 9, face = "bold"))
 
     # Right plot: raw absolute change (scientific notation)
-    p_raw <- ggplot(top, aes(x = Importance, y = Feature)) +
+    p_raw <- ggplot(top, aes(x = Importance, y = Disp)) +
       geom_col(fill = "coral3", width = 0.7) +
       scale_x_continuous(labels = scales::scientific,
                          expand = expansion(mult = c(0, 0.15))) +
@@ -1017,10 +1112,15 @@ server <- function(input, output, session) {
       ))
     }
     total <- sum(df$Importance[df$Importance > 0])
-    df$Pct <- ifelse(total > 0, round(df$Importance / total * 100, 2), 0)
-    df$Importance <- formatC(df$Importance, format = "e", digits = 3)
-    names(df) <- c("Feature", "Raw |Δ prediction|", "% of total")
-    datatable(df, rownames = FALSE, options = list(pageLength = 15, order = list(list(2, "desc"))))
+    disp <- if (isTRUE(input$show_tech_names)) df$Feature else df$Label
+    out <- data.frame(
+      Feature = disp,
+      Raw = formatC(df$Importance, format = "e", digits = 3),
+      Pct = ifelse(total > 0, round(df$Importance / total * 100, 2), 0),
+      stringsAsFactors = FALSE
+    )
+    names(out) <- c("Feature", "Raw |Δ prediction|", "% of total")
+    datatable(out, rownames = FALSE, options = list(pageLength = 15, order = list(list(2, "desc"))))
   })
 
   output$download_importance_csv <- downloadHandler(
@@ -1034,7 +1134,13 @@ server <- function(input, output, session) {
         write.csv(data.frame(Message = "No importance data. Compute first."), file, row.names = FALSE)
         return()
       }
-      write.csv(df, file, row.names = FALSE)
+      out <- data.frame(
+        Variable = df$Feature,       # variable name (dataset column)
+        Label = df$Label,            # descriptive label
+        Importance = df$Importance,
+        stringsAsFactors = FALSE
+      )
+      write.csv(out, file, row.names = FALSE)
     }
   )
 }
