@@ -124,7 +124,7 @@ FRIENDLY <- c(
   "digoxin_peri" = "Digoxin",
   "amyloid_therapeutics_diflunisal_peri" = "Diflunisal",
   "smoking_cessation_oral_peri" = "Oral smoking cessation medication",
-  "sex_imp" = "Sex (female = 1)",
+  "sex_imp" = "Sex (1 = male, 2 = female)",
   "acei_arb_entresto" = "ACEi / ARB / Entresto",
   "acute_mi_angina_other" = "Acute MI / unstable angina / other ACS",
   "demographics_age_index_ecg" = "Age, y",
@@ -159,6 +159,91 @@ FEATURE_SECTIONS <- list(
   list(title = "Medications", feats = c("anti_platelet_oral_non_asa_any_peri", "anti_coagulant_oral_any_peri", "nitrates_any_peri", "acei_arb_entresto", "beta_blocker_any_peri", "ivabradine_peri", "ccb_dihydro_peri", "ccb_non_dihydro_peri", "diuretic_loop_peri", "diuretic_thiazide_peri", "diuretic_low_ceiling_non_thiazide_peri", "diuretic_mra_peri", "anti_arrhythmic_any_peri", "digoxin_peri", "amyloid_therapeutics_diflunisal_peri", "smoking_cessation_oral_peri"))
 )
 
+# Reference-cohort imputation defaults (AF prediction Supplementary 7.15, Overall column).
+# Continuous: study-cohort mean; categorical binary flags: 0 (absence = modal category).
+IMPUTE_DEFAULTS <- c(
+  "hypertension_icd10" = 0,
+  "diabetes_combined" = 0,
+  "dyslipidemia_combined" = 0,
+  "dcm_icd10" = 0,
+  "hcm_icd10" = 0,
+  "myocarditis_icd10_prior" = 0,
+  "pericarditis_icd10_prior" = 0,
+  "aortic_aneurysm_icd10" = 0,
+  "aortic_dissection_icd10_prior" = 0,
+  "pulmonary_htn_icd10" = 0,
+  "amyloid_icd10" = 0,
+  "copd_icd10" = 0,
+  "obstructive._sleep_apnea_icd10" = 0,
+  "hyperthyroid_icd10" = 0,
+  "hypothyroid_icd10" = 0,
+  "rheumatoid_arthritis_icd10" = 0,
+  "sle_icd10" = 0,
+  "sarcoid_icd10" = 0,
+  "cancer_any_icd10" = 0,
+  "event_cv_hf_admission_icd10_prior" = 0,
+  "event_cv_ep_vt_any_icd10_prior" = 0,
+  "event_cv_ep_sca_survived_icd10_cci_prior" = 0,
+  "event_cv_cns_stroke_ischemic_icd10_prior" = 0,
+  "event_cv_cns_stroke_hemorrh_icd10_prior" = 0,
+  "event_cv_cns_tia_icd10_prior" = 0,
+  "pci_prior" = 0,
+  "cabg_prior" = 0,
+  "transplant_heart_cci_prior" = 0,
+  "lvad_cci_prior" = 0,
+  "pacemaker_permanent_cci_prior" = 0,
+  "crt_cci_prior" = 0,
+  "icd_cci_prior" = 0,
+  "ecg_resting_paced" = 0,
+  "ecg_resting_bigeminy" = 0,
+  "ecg_resting_LBBB" = 0,
+  "ecg_resting_RBBB" = 0,
+  "ecg_resting_incomplete_LBBB" = 0,
+  "ecg_resting_incomplete_RBBB" = 0,
+  "ecg_resting_LAFB" = 0,
+  "ecg_resting_LPFB" = 0,
+  "ecg_resting_bifascicular_block" = 0,
+  "ecg_resting_trifascicular_block" = 0,
+  "ecg_resting_intraventricular_conduction_delay" = 0,
+  "anti_platelet_oral_non_asa_any_peri" = 0,
+  "anti_coagulant_oral_any_peri" = 0,
+  "nitrates_any_peri" = 0,
+  "beta_blocker_any_peri" = 0,
+  "ivabradine_peri" = 0,
+  "ccb_dihydro_peri" = 0,
+  "ccb_non_dihydro_peri" = 0,
+  "diuretic_loop_peri" = 0,
+  "diuretic_thiazide_peri" = 0,
+  "diuretic_low_ceiling_non_thiazide_peri" = 0,
+  "diuretic_mra_peri" = 0,
+  "anti_arrhythmic_any_peri" = 0,
+  "digoxin_peri" = 0,
+  "amyloid_therapeutics_diflunisal_peri" = 0,
+  "smoking_cessation_oral_peri" = 0,
+  "sex_imp" = 2,
+  "acei_arb_entresto" = 0,
+  "acute_mi_angina_other" = 0,
+  "demographics_age_index_ecg" = 51.02,
+  "ecg_resting_hr" = 75.15,
+  "ecg_resting_pr" = 157.58,
+  "ecg_resting_qrs" = 91.41,
+  "ecg_resting_qtc" = 432.81,
+  "hgb_peri" = 141.36,
+  "rdw_peri" = 13.48,
+  "wbc_peri" = 8.62,
+  "plt_peri" = 248.69,
+  "alkaline_phophatase_peri" = 83.28,
+  "alanine_transaminase_peri" = 32.86,
+  "urea_peri" = 5.64,
+  "creatinine_peri" = 80.31,
+  "sodium_peri" = 138.84,
+  "potassium_peri" = 4.04,
+  "chloride_peri" = 104.09,
+  "tsh_peri" = 2.42
+)
+# NOTE: sex_imp default = 2 (Female = modal category; raw coding 1=Male, 2=Female).
+#       Raw sex is recoded to the model's 0/1 (value - 1) in input_df()/sanitize_for_python().
+
 # -----------------------------
 # UI
 # -----------------------------
@@ -187,7 +272,7 @@ ui <- navbarPage(
             helpText("Select a row to view/edit its features and run prediction for that individual. Use arrows or type a number."),
             tags$hr(),
             h5("Features (all 78 — editable)", style = "margin-top:8px;font-weight:bold"),
-            helpText("Values are seeded from the selected CSV row; any missing value is filled with 0. Hover a label for the full description and variable name.", style = "font-size:0.85em;"),
+            helpText("Values are seeded from the selected CSV row; any missing value is imputed with a reference-cohort value (mean for continuous, mode for categorical). Hover a label for the full description and variable name.", style = "font-size:0.85em;"),
             checkboxInput("show_tech_names", "Show variable names", value = FALSE),
             div(
               style = "max-height: 780px; overflow-y: auto; overflow-x: hidden; border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px; background: #ffffff;",
@@ -263,7 +348,7 @@ ui <- navbarPage(
         tags$ul(
           tags$li("Upload a CSV (one row per individual) whose columns are named with the model's variable names. Select Current row to load that individual's values."),
           tags$li("All 78 features are shown as editable fields, grouped by clinical category (Demographics, comorbidities, prior events/procedures, Resting ECG, Laboratory, Medications) in a scrollable list, seeded from the selected row. You can edit any value before running the prediction."),
-          tags$li("Missing data is handled automatically: any blank/NA cell, or any required column absent from the CSV, is filled with 0, and a notification tells you how many values were filled."),
+          tags$li("Missing data is handled automatically: any blank/NA cell, or any required column absent from the CSV, is imputed with a reference-cohort value — the study-cohort mean for continuous variables and the modal category for categorical variables (binary flags set to absence). A notification tells you how many values were imputed."),
           tags$li("Each field shows a descriptive label (e.g. \"Hemoglobin, g/L\"). Hover a label to see the full description and the underlying variable name (the dataset/CSV column, e.g. hgb_peri). Tick \"Show variable names\" to display the variable names in place of the labels."),
           tags$li("Categorical features are 0/1 coded (0 = no, 1 = yes).")
         ),
@@ -325,8 +410,8 @@ server <- function(input, output, session) {
       is_cat <- feat %in% cat_names
       friendly <- FRIENDLY[[feat]] %||% feat
       lab <- if (show_tech) feat else friendly
-      tip <- paste0(friendly, if (is_cat) " (0 = no, 1 = yes)" else "", "  ·  ", feat)
-      val <- (cur[[feat]] %||% example_defaults[[feat]]) %||% 0
+      tip <- paste0(friendly, if (is_cat && feat != "sex_imp") " (0 = no, 1 = yes)" else "", "  ·  ", feat)
+      val <- (cur[[feat]] %||% example_defaults[[feat]]) %||% IMPUTE_DEFAULTS[[feat]]
       fluidRow(
         style = "margin-bottom: 2px;",
         column(
@@ -371,7 +456,7 @@ server <- function(input, output, session) {
   # asynchronously). sync_csv_to_inputs() writes here synchronously.
   .init_feature_vals <- setNames(
     lapply(feature_names, function(f) {
-      v <- example_defaults[[f]] %||% 0
+      v <- example_defaults[[f]] %||% IMPUTE_DEFAULTS[[f]]
       if (f %in% cat_names) as.integer(v) else as.numeric(v)
     }),
     feature_names
@@ -419,12 +504,12 @@ server <- function(input, output, session) {
     )
     shiny::validate(need(!is.null(df), "Failed to read CSV"))
     # Missing columns are no longer a hard error: add them as NA so they get
-    # filled with 0 downstream, and tell the user which ones were absent.
+    # imputed with reference-cohort values downstream, and tell the user which were absent.
     missing_cols <- setdiff(feature_names, names(df))
     if (length(missing_cols) > 0) {
       for (mc in missing_cols) df[[mc]] <- NA
       showNotification(
-        sprintf("CSV is missing %d required column(s); they will be filled with 0: %s",
+        sprintf("CSV is missing %d required column(s); they will be imputed with reference-cohort values: %s",
                 length(missing_cols), paste(missing_cols, collapse = ", ")),
         type = "warning", duration = 8
       )
@@ -467,7 +552,7 @@ server <- function(input, output, session) {
   })
 
   # Seed the 78 editable feature fields from the selected CSV row.
-  # Missing / blank cells are filled with 0 and the user is told how many.
+  # Missing / blank cells are imputed with IMPUTE_DEFAULTS and the user is told how many.
   sync_csv_to_inputs <- function() {
     if (is.null(input$csv_file)) return()
     df <- tryCatch(csv_data(), error = function(e) NULL)
@@ -488,14 +573,14 @@ server <- function(input, output, session) {
       val <- row[[feat]]
       if (is.factor(val)) val <- as.character(val)
       num <- suppressWarnings(as.numeric(val))
-      if (length(num) == 0 || is.na(num)) { num <- 0; missing <- missing + 1L }
+      if (length(num) == 0 || is.na(num)) { num <- IMPUTE_DEFAULTS[[feat]]; missing <- missing + 1L }
       num <- if (feat %in% cat_names) as.integer(num) else as.numeric(num)
       vals[[feat]] <- num
       updateNumericInput(session, paste0("feat_", feat), value = num)
     }
     feature_vals(vals)  # write the source of truth synchronously (no client round-trip)
     if (missing > 0) {
-      showNotification(sprintf("Row %d has %d missing value(s); filled with 0.", cur, missing),
+      showNotification(sprintf("Row %d has %d missing value(s); imputed with reference-cohort values (mean/mode).", cur, missing),
                        type = "warning", duration = 5)
     }
   }
@@ -539,13 +624,16 @@ server <- function(input, output, session) {
     for (f in cat_names) {
       v <- df[[f]]
       if (is.factor(v)) v <- as.character(v)
-      df[[f]] <- as.integer(suppressWarnings(as.numeric(v)) %||% 0L)
+      df[[f]] <- as.integer(suppressWarnings(as.numeric(v)) %||% as.integer(round(IMPUTE_DEFAULTS[[f]])))
     }
     for (f in cont_names) {
       v <- df[[f]]
       if (is.factor(v)) v <- as.character(v)
-      df[[f]] <- as.numeric(suppressWarnings(as.numeric(v)) %||% 0)
+      df[[f]] <- as.numeric(suppressWarnings(as.numeric(v)) %||% IMPUTE_DEFAULTS[[f]])
     }
+    # Recode sex from raw coding (1=Male, 2=Female) to the model's 0/1 coding
+    # (0=Male, 1=Female), matching the training preprocessing (value - 1).
+    if ("sex_imp" %in% names(df)) df$sex_imp <- as.integer(pmin(pmax(df$sex_imp - 1L, 0L), 1L))
     df
   })
 
@@ -738,13 +826,15 @@ server <- function(input, output, session) {
     # Fill NA per cell (not per column): a single NA must not zero the whole
     # column — that would corrupt the multi-row permutation reference.
     for (f in cat_names) {
-      z <- suppressWarnings(as.numeric(as.character(out[[f]]))); z[is.na(z)] <- 0
+      z <- suppressWarnings(as.numeric(as.character(out[[f]]))); z[is.na(z)] <- IMPUTE_DEFAULTS[[f]]
       out[[f]] <- as.integer(z)
     }
     for (f in cont_names) {
-      z <- suppressWarnings(as.numeric(as.character(out[[f]]))); z[is.na(z)] <- 0
+      z <- suppressWarnings(as.numeric(as.character(out[[f]]))); z[is.na(z)] <- IMPUTE_DEFAULTS[[f]]
       out[[f]] <- as.numeric(z)
     }
+    # Recode sex 1/2 (raw: 1=Male, 2=Female) -> 0/1 (model: 0=Male, 1=Female).
+    if ("sex_imp" %in% names(out)) out$sex_imp <- as.integer(pmin(pmax(out$sex_imp - 1L, 0L), 1L))
     out
   }
 
