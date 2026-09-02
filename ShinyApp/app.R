@@ -272,7 +272,7 @@ ui <- navbarPage(
             helpText("Select a row to view/edit its features and run prediction for that individual. Use arrows or type a number."),
             tags$hr(),
             h5("Features (all 78 — editable)", style = "margin-top:8px;font-weight:bold"),
-            helpText("Values are seeded from the selected CSV row; any missing value is imputed with a reference-cohort value (mean for continuous, mode for categorical). Hover a label for the full description and variable name.", style = "font-size:0.85em;"),
+            helpText("Values are seeded from the selected CSV row; any missing value is imputed from the study cohort distribution (training-cohort mean for continuous variables, modal category for categorical variables; not healthy reference ranges). Hover a label for the full description and variable name.", style = "font-size:0.85em;"),
             checkboxInput("show_tech_names", "Show variable names", value = FALSE),
             div(
               style = "max-height: 780px; overflow-y: auto; overflow-x: hidden; border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px; background: #ffffff;",
@@ -348,7 +348,7 @@ ui <- navbarPage(
         tags$ul(
           tags$li("Upload a CSV (one row per individual) whose columns are named with the model's variable names. Select Current row to load that individual's values."),
           tags$li("All 78 features are shown as editable fields, grouped by clinical category (Demographics, comorbidities, prior events/procedures, Resting ECG, Laboratory, Medications) in a scrollable list, seeded from the selected row. You can edit any value before running the prediction."),
-          tags$li("Missing data is handled automatically: any blank/NA cell, or any required column absent from the CSV, is imputed with a reference-cohort value — the study-cohort mean for continuous variables and the modal category for categorical variables (binary flags set to absence). A notification tells you how many values were imputed."),
+          tags$li("Missing data is handled automatically: any blank/NA cell, or any required column absent from the CSV, is imputed from the distribution of the study cohort used to train the model: the cohort mean for continuous variables and the modal category for categorical variables (binary flags set to absence). These are cohort summary values, not healthy reference ranges. A notification tells you how many values were imputed."),
           tags$li("Each field shows a descriptive label (e.g. \"Hemoglobin, g/L\"). Hover a label to see the full description and the underlying variable name (the dataset/CSV column, e.g. hgb_peri). Tick \"Show variable names\" to display the variable names in place of the labels."),
           tags$li("Categorical features are 0/1 coded (0 = no, 1 = yes).")
         ),
@@ -509,7 +509,7 @@ server <- function(input, output, session) {
     if (length(missing_cols) > 0) {
       for (mc in missing_cols) df[[mc]] <- NA
       showNotification(
-        sprintf("CSV is missing %d required column(s); they will be imputed with reference-cohort values: %s",
+        sprintf("CSV is missing %d required column(s); they will be imputed with study-cohort mean/mode values: %s",
                 length(missing_cols), paste(missing_cols, collapse = ", ")),
         type = "warning", duration = 8
       )
@@ -580,7 +580,7 @@ server <- function(input, output, session) {
     }
     feature_vals(vals)  # write the source of truth synchronously (no client round-trip)
     if (missing > 0) {
-      showNotification(sprintf("Row %d has %d missing value(s); imputed with reference-cohort values (mean/mode).", cur, missing),
+      showNotification(sprintf("Row %d has %d missing value(s); imputed with study-cohort mean/mode values.", cur, missing),
                        type = "warning", duration = 5)
     }
   }
