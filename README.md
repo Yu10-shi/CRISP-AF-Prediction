@@ -1,10 +1,9 @@
 # CRISP-AF: uncertainty-calibrated interpretable transformer for competing-risk prediction of new-onset atrial fibrillation among 106,651 CIROC participants
 
 
-This repository contains the implementation of **CRISP-AF**
-(**A **), an end-to-end deep survival learning framework for individualized atrial fibrillation (AF) risk prediction in the presence of competing risks.
+CRISP-AF is an end-to-end tabular transformer and competing-risk survival model for estimating the risk of recorded new-onset atrial fibrillation (AF) or atrial flutter among adults undergoing cardiac assessment. It accounts for all-cause death as a competing event and includes post-hoc recalibration, event-time summaries, and feature interpretation.
 
-The project applies transformer-based representation learning, competing-risk survival modeling, uncertainty calibration, and model interpretability to a large real-world clinical cohort from the Cardiovascular Imaging Registry of Calgary.
+The model was developed and internally evaluated using 106,651 participants from the Cardiovascular Imaging Registry of Calgary (CIROC). This repository contains code for model development, evaluation, interpretation, and a Shiny research interface.
 
 ## Overview
 
@@ -25,8 +24,8 @@ The model was developed and evaluated using a real-world clinical cohort derived
 
 After preprocessing, the analytic cohort included:
 
-* 106,615 participants
-* 108 demographic, clinical, laboratory, medication, and electrocardiographic features
+* 106,651 participants
+* 78 demographic, clinical, laboratory, medication, and electrocardiographic features
 * Incident atrial fibrillation as the primary outcome
 * Death as a competing-risk endpoint
 
@@ -98,8 +97,7 @@ The interface allows users to:
 
 * Upload patient data as a CSV file (one row per individual) and select a row
 * View and edit all 78 model features for the selected record in a scrollable
-  panel; any missing value (blank cell or absent column) is automatically
-  filled with 0, with a notification of how many were filled
+  panel; Blank cells and absent columns are automatically filled using study-cohort reference values: the mean for continuous variables and the most common category for categorical variables.
 * Generate individualized AF and competing-risk predictions
 * Visualize time-dependent event probability and survival curves, including an
   Aalen–Johansen–recalibrated upper predicted bound for each outcome
@@ -143,7 +141,7 @@ data/
 ├── val.csv
 ├── cal.csv
 ├── test.csv
-└── bootstrap500/
+└── bootstrap50/
     ├── bootstrap_1.csv
     ├── bootstrap_2.csv
     └── ...
