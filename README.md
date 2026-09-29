@@ -1,8 +1,8 @@
 # CRISP-AF: uncertainty-calibrated interpretable transformer for competing-risk prediction of new-onset atrial fibrillation among 106,651 CIROC participants
 
 
-This repository contains the implementation of **UCTT-RP**
-(**Uncertainty-Calibrated Interpretable Tabular Transformer Model for Competing Risk Prediction**), an end-to-end deep survival learning framework for individualized atrial fibrillation (AF) risk prediction in the presence of competing risks.
+This repository contains the implementation of **CRISP-AF**
+(**A **), an end-to-end deep survival learning framework for individualized atrial fibrillation (AF) risk prediction in the presence of competing risks.
 
 The project applies transformer-based representation learning, competing-risk survival modeling, uncertainty calibration, and model interpretability to a large real-world clinical cohort from the Cardiovascular Imaging Registry of Calgary.
 
@@ -10,7 +10,7 @@ The project applies transformer-based representation learning, competing-risk su
 
 Atrial fibrillation is a common cardiac arrhythmia associated with major adverse outcomes, including stroke, heart failure, and mortality. Accurate individualized AF risk prediction is clinically important but remains challenging because real-world clinical data often contain heterogeneous feature types, missing values, nonlinear risk-factor interactions, competing events, and limited interpretability.
 
-UCTT-RP is designed to address these challenges by integrating:
+CRISP-AF is designed to address these challenges by integrating:
 
 * A tabular transformer for robust representation learning from mixed clinical variables
 * Deep competing-risk survival modeling for joint prediction of AF and death
@@ -34,13 +34,13 @@ Patients were assigned to training, validation, calibration, and test sets for m
 
 ## Model Architecture
 
-UCTT-RP contains three main components.
+CRISP-AF contains three main components.
 
 <p align="center">
-  <img src="docs/uctt_rp_workflow.png" alt="UCTT-RP framework overview" width="900">
+  <img src="docs/uctt_rp_workflow.png" alt="CRISP-AF framework overview" width="900">
 </p>
 
-**Figure 1. Overall architecture and analytical workflow of the UCTT-RP framework.**  
+**Figure 1. Overall architecture and analytical workflow of the CRISP-AF framework.**  
 (A) End-to-end deep survival architecture integrating tabular transformer-based feature representation and competing-risk modeling.  
 (B) Aalen-Johansen-based post-hoc recalibration of cumulative incidence functions and construction of calibrated upper predicted bounds.  
 (C) Model interpretation workflow using SHAP values to identify global and patient-level feature contributions.
@@ -63,7 +63,7 @@ This competing-risk formulation accounts for the fact that death can preclude fu
 
 ### 3. Uncertainty Calibration
 
-To improve calibration of predicted cumulative incidence functions, UCTT-RP applies post-hoc recalibration using the Aalen-Johansen estimator as a nonparametric reference.
+To improve calibration of predicted cumulative incidence functions, CRISP-AF applies post-hoc recalibration using the Aalen-Johansen estimator as a nonparametric reference.
 
 The recalibrated cumulative incidence functions are then used to derive event-time upper predicted bounds, providing uncertainty-aware summaries of predicted AF and competing-risk event times.
 
@@ -78,10 +78,10 @@ Important predictors identified in the study include demographic factors, labora
 
 ## Baseline Models
 
-UCTT-RP was compared with several baseline and ablation models:
+CRISP-AF was compared with several baseline and ablation models:
 
 * DeepHit trained directly on raw clinical features
-* Two-stage UCTT-RP model
+* Two-stage CRISP-AF model
 * Random Survival Forest for competing risks
 
 Model performance was evaluated using:
@@ -113,7 +113,7 @@ See `ShinyApp/SETUP.md` for setup and run instructions.
 ## Repository Structure
 
 ```text
-UCTT-RP-AF-Prediction/
+CRISP-AF-Prediction/
 ├── README.md
 ├── requirements.txt
 ├── notebooks/
