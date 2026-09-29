@@ -1,4 +1,5 @@
-# UCTT-RP: Uncertainty-Calibrated Tabular Transformer for Atrial Fibrillation Risk Prediction
+# CRISP-AF: uncertainty-calibrated interpretable transformer for competing-risk prediction of new-onset atrial fibrillation among 106,651 CIROC participants
+
 
 This repository contains the implementation of **UCTT-RP**
 (**Uncertainty-Calibrated Interpretable Tabular Transformer Model for Competing Risk Prediction**), an end-to-end deep survival learning framework for individualized atrial fibrillation (AF) risk prediction in the presence of competing risks.
