@@ -168,10 +168,7 @@ The current notebooks use project-specific absolute paths, such as:
 /home/UT_shared/data/
 ```
 
-Before running the code on a new machine, update these paths to match the local repository structure.
 
-```
-```
 
 
 ## Data Availability
