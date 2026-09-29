@@ -88,6 +88,7 @@ Model performance was evaluated using:
 * Time-dependent concordance index
 * Integrated Brier score
 * Coverage of event-time upper predicted bounds
+* Time-dependent AUC
 
 ## Shiny Application
 
@@ -145,7 +146,7 @@ data/
     ├── bootstrap_1.csv
     ├── bootstrap_2.csv
     └── ...
-````
+```
 
 Each data split should contain clinical feature columns and two outcome columns:
 
@@ -157,7 +158,7 @@ The `status` variable is defined as:
 | Value | Meaning                                                   |
 | ----: | --------------------------------------------------------- |
 |   `0` | Censored                                                  |
-|   `1` | Incident atrial fibrillation                              |
+|   `1` | Incident atrial fibrillation or atrial flutter                             |
 |   `2` | Competing event, such as death before atrial fibrillation |
 
 The current notebooks use project-specific absolute paths, such as:
